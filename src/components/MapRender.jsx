@@ -1,8 +1,18 @@
+import { useRef, useState } from "react";
+import {
+  MapContainer,
+  Polygon,
+  Marker,
+  Circle,
+  TileLayer,
+  Tooltip,
+  CircleMarker,
+  Polyline,
+  AttributionControl,
+} from "react-leaflet";
 import L from "leaflet";
-import { MapContainer, Polygon, TileLayer } from "react-leaflet";
+
 import { data } from "../data/data";
-import { useState } from "react";
-import { polygon } from "leaflet";
 
 const h3 = require("h3-js");
 
@@ -72,7 +82,7 @@ const MapRender = () => {
   };
 
   [...mapJson].forEach((json) => {
-    const H3_INDEX = h3.latLngToCell(json[0], json[1], RESOLUTION);
+    const H3_INDEX = h3.latLngToCell(json[0], json[1], 11);
     const HEX_COUNT = hexagonMap.get(H3_INDEX);
 
     if (HEX_COUNT) {
@@ -110,7 +120,7 @@ const MapRender = () => {
     <div id="map" className="map-container">
       <MapContainer
         center={[40.7579747, -73.9877313]}
-        style={{ height: "100%" }}
+        style={{ width: "50%", height: "100%" }}
         zoom={15}
       >
         <TileLayer
@@ -120,18 +130,112 @@ const MapRender = () => {
         {Object.entries(groups).map(([weight, polygons]) => {
           const color = getColor(weight);
           return (
-            <Polygon
-              key={weight}
-              positions={polygons}
-              pathOptions={{
-                ...baseStyle,
-                fillColor: color,
-                color: color, // stroke color
-                weight: 0, // stroke weight
-              }}
-            />
+            <>
+              <Polygon
+                key={weight}
+                positions={polygons}
+                pathOptions={{
+                  ...baseStyle,
+                  fillColor: color,
+                  color: color, // stroke color
+                  weight: 0, // stroke weight
+                }}
+              />
+            </>
           );
         })}
+        <Polyline
+          smoothFactor={1}
+          positions={data.map((item) => ({
+            lat: item[0],
+            lng: item[1],
+          }))}
+          stroke={true}
+          weight={3}
+          dashArray={[4]}
+          dashOffset=""
+        />
+        <Circle center={[40.7579747, -73.9777313]} radius={50} />
+        <Marker position={[40.7579747, -73.9777313]}>
+          <Tooltip
+            opacity={1}
+            direction="auto"
+            position={[40.7579747, -73.9777313]}
+            content={"This is difficult...."}
+          />
+        </Marker>
+        <CircleMarker
+          center={[40.7579747, -73.9677313]}
+          color="black"
+          radius={30}
+        >
+          <Tooltip
+            opacity={1}
+            direction="auto"
+            position={[40.7579747, -73.9677313]}
+            content={"This is difficult...."}
+          />
+        </CircleMarker>
+      </MapContainer>
+
+      <MapContainer
+        center={[40.7579747, -73.9877313]}
+        style={{ width: "50%", height: "100%" }}
+        zoom={15}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={15}
+        />
+        {Object.entries(groups).map(([weight, polygons]) => {
+          const color = getColor(weight);
+          return (
+            <>
+              <Polygon
+                key={weight}
+                positions={polygons}
+                pathOptions={{
+                  ...baseStyle,
+                  fillColor: color,
+                  color: color, // stroke color
+                  weight: 0, // stroke weight
+                }}
+              />
+            </>
+          );
+        })}
+        <Polyline
+          smoothFactor={1}
+          positions={data.map((item) => ({
+            lat: item[0],
+            lng: item[1],
+          }))}
+          stroke={true}
+          weight={3}
+          dashArray={[4]}
+          dashOffset=""
+        />
+        <Circle center={[40.7579747, -73.9777313]} radius={50} />
+        <Marker position={[40.7579747, -73.9777313]}>
+          <Tooltip
+            opacity={1}
+            direction="auto"
+            position={[40.7579747, -73.9777313]}
+            content={"This is difficult...."}
+          />
+        </Marker>
+        <CircleMarker
+          center={[40.7579747, -73.9677313]}
+          color="black"
+          radius={30}
+        >
+          <Tooltip
+            opacity={1}
+            direction="auto"
+            position={[40.7579747, -73.9677313]}
+            content={"This is difficult...."}
+          />
+        </CircleMarker>
       </MapContainer>
     </div>
   );
