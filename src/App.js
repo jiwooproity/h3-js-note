@@ -1,7 +1,8 @@
-import Map from "./components/MapRender";
+// import Map from "./components/MapRender";
+import PracticeRender from "./components/PracticeRender";
 
 function App() {
-  return <Map />;
+  return <PracticeRender />;
 }
 
 export default App;
