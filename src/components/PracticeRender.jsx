@@ -9,9 +9,14 @@ import {
   Popup,
   useMap,
   Polyline,
+  Polygon,
 } from "react-leaflet";
 
 import icon from "../assets/constants";
+import { data } from "../data/data";
+import { heatmapData } from "../data/heatmapData";
+import { loadData } from "../data/loadData";
+import HeatmapLayer from "./HeatmapLayer";
 
 const h3 = require("h3-js");
 delete L.Icon.Default.prototype._getIconUrl;
@@ -157,12 +162,42 @@ const MiniMapContainer = ({ position, zoom }) => {
 
 const PracticeRender = () => {
   const DejayPosition = [37.5515653, 126.9176736];
+  const [latLngs, setLatLngs] = useState([...data]);
+
+  const convertBoundary = (cell) => {
+    return h3.cellToBoundary(cell);
+  };
+  
+  const getCells = latLngs.map((latLng) => {
+    return h3.latLngToCell(latLng[0], latLng[1], 11);
+  });
+
+  const getBoundary = getCells.map(convertBoundary);
+  // console.log("CellToBoundary", getBoundary);
+
+  const getGridDisk = getCells.map((cell) => {
+    return h3.gridDisk(cell, 1);
+  });
+
+  const getGridBoundary = getGridDisk.map((grids) => {
+    return grids.map(convertBoundary);
+  })
+
+  const cfg = {
+    radius: 0.1,
+    maxOpacity: 0.8,
+    scaleRadius: true,
+    useLocalExtrema: true,
+    latField: "lat",
+    lngField: "lng",
+    valueField: "count"
+  };
 
   return (
     <div className="map-container">
       <MapContainer style={MapStyle} zoom={15} center={DejayPosition}>
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           maxZoom={15}
         />
@@ -171,6 +206,11 @@ const PracticeRender = () => {
           <Tooltip content="Dejay" direction="auto" />
         </Marker>
         <LocationMarkerButton center={DejayPosition} />
+        {getGridBoundary.map((boundary) => (
+          <Polygon positions={boundary}/>
+        ))}
+        <Polyline positions={loadData} />
+        <HeatmapLayer config={cfg} data={heatmapData} />
       </MapContainer>
     </div>
   );
