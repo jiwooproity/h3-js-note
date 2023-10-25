@@ -1,12 +1,12 @@
-# 구현을 위해 사용된 라이브러리 ..
+### 구현을 위해 사용된 라이브러리 ..
 - Uber H3-JS
 - Map Render / leaflet
 
-# 4.x.x 변경된 메소드 내역 확인 링크
+### 4.x.x 변경된 메소드 내역 확인 링크
 
 **Note :** https://github.com/facebook/create-react-app](https://h3geo.org/docs/library/migration-3.x/functions/)https://h3geo.org/docs/library/migration-3.x/functions/
 
-# 메모
+### 메모
 |함수명|설명|
 |------|--------|
 |latLngToCell( lat, lng, res )|위도와 경도, 크기 값을 기준으로 h3 값을 반환|
