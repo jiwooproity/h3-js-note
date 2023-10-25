@@ -167,7 +167,7 @@ const PracticeRender = () => {
   const convertBoundary = (cell) => {
     return h3.cellToBoundary(cell);
   };
-  
+
   const getCells = latLngs.map((latLng) => {
     return h3.latLngToCell(latLng[0], latLng[1], 11);
   });
@@ -181,7 +181,7 @@ const PracticeRender = () => {
 
   const getGridBoundary = getGridDisk.map((grids) => {
     return grids.map(convertBoundary);
-  })
+  });
 
   const cfg = {
     radius: 0.1,
@@ -190,16 +190,17 @@ const PracticeRender = () => {
     useLocalExtrema: true,
     latField: "lat",
     lngField: "lng",
-    valueField: "count"
+    valueField: "count",
   };
 
   return (
     <div className="map-container">
-      <MapContainer style={MapStyle} zoom={15} center={DejayPosition}>
+      <MapContainer style={MapStyle} zoom={4} center={DejayPosition}>
         <TileLayer
           // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           maxZoom={15}
+          minZoom={4}
         />
         <MiniMapContainer position="topright" />
         <Marker position={DejayPosition}>
@@ -207,7 +208,7 @@ const PracticeRender = () => {
         </Marker>
         <LocationMarkerButton center={DejayPosition} />
         {getGridBoundary.map((boundary) => (
-          <Polygon positions={boundary}/>
+          <Polygon positions={boundary} />
         ))}
         <Polyline positions={loadData} />
         <HeatmapLayer config={cfg} data={heatmapData} />
