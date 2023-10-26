@@ -1,6 +1,8 @@
 ### 구현을 위해 사용된 라이브러리 ..
 - Uber H3-JS
 - Map Render / leaflet
+- leaflet-heatmap
+- @react-leaflet/core
 
 ### 4.x.x 변경된 메소드 내역 확인 링크
 
@@ -25,3 +27,13 @@
 |------|--------|
 |useMap|상호작용을 위한 이벤트를 생성 가능|
 |useMapEvent|MapContainer 안에 생성이 가능하며, 생성 시 맵 위에서 일어나는 이벤트를 감지 및 트리거 동작|
+
+```
+{
+    "@react-leaflet/core": "^2.1.0",
+    "h3-js": "^4.1.0",
+    "leaflet": "^1.9.4",
+    "leaflet-heatmap": "^1.0.0",
+    "react-leaflet": "^4.2.1",
+}
+```
