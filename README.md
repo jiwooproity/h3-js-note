@@ -1,14 +1,15 @@
-### 구현을 위해 사용된 라이브러리 ..
+## Library
 - Uber H3-JS
 - Map Render / leaflet
 - leaflet-heatmap
 - @react-leaflet/core
 
-### 4.x.x 변경된 메소드 내역 확인 링크
+## Changed Functions - 4.x.x
 
 **Note :** https://github.com/facebook/create-react-app](https://h3geo.org/docs/library/migration-3.x/functions/)https://h3geo.org/docs/library/migration-3.x/functions/
 
-### 메모
+## Memo
+
 |함수명|설명|
 |------|--------|
 |latLngToCell( lat, lng, res )|위도와 경도, 크기 값을 기준으로 h3 값을 반환|
@@ -28,6 +29,7 @@
 |useMap|상호작용을 위한 이벤트를 생성 가능|
 |useMapEvent|MapContainer 안에 생성이 가능하며, 생성 시 맵 위에서 일어나는 이벤트를 감지 및 트리거 동작|
 
+## Package.json
 ```
 {
     "@react-leaflet/core": "^2.1.0",
