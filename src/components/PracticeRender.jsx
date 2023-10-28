@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -10,6 +10,7 @@ import {
   useMap,
   Polyline,
   Polygon,
+  Rectangle,
 } from "react-leaflet";
 
 import icon from "../assets/constants";
@@ -17,6 +18,7 @@ import { data } from "../data/data";
 import { heatmapData } from "../data/heatmapData";
 import { loadData } from "../data/loadData";
 import HeatmapLayer from "./HeatmapLayer";
+import { useEventHandlers } from "@react-leaflet/core";
 
 const h3 = require("h3-js");
 delete L.Icon.Default.prototype._getIconUrl;
@@ -119,6 +121,31 @@ const LocationMarkerButton = ({ center }) => {
   );
 };
 
+const MiniMapBounds = ({ parentMap, zoom }) => {
+  const BOUNDS_STYLE = { weight: 1 };
+  const minimap = useMap();
+
+  const onClick = useCallback(
+    (e) => {
+      parentMap.setView(e.latlng, parentMap.getZoom());
+    },
+    [parentMap]
+  );
+
+  useMapEvent("click", onClick);
+
+  const [bounds, setBounds] = useState(parentMap.getBounds());
+  const onChange = useCallback(() => {
+    setBounds(parentMap.getBounds());
+    minimap.setView(parentMap.getCenter(), zoom);
+  }, [minimap, parentMap, zoom]);
+
+  const handlers = useMemo(() => ({ move: onChange, zoom: onChange }), []);
+  useEventHandlers({ instance: parentMap }, handlers);
+
+  return <Rectangle bounds={bounds} pathOptions={BOUNDS_STYLE} />;
+};
+
 const MiniMapContainer = ({ position, zoom }) => {
   const parentMap = useMap();
   const mapZoom = zoom || 0;
@@ -137,6 +164,7 @@ const MiniMapContainer = ({ position, zoom }) => {
         zoomControl={false}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <MiniMapBounds parentMap={parentMap} zoom={mapZoom} />
       </MapContainer>
     ),
     []
@@ -200,7 +228,7 @@ const PracticeRender = () => {
           // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           maxZoom={15}
-          minZoom={4}
+          minZoom={4} // leaflet-heatmap 맵 충돌을 방지하기 위한 최소 설정 값
         />
         <MiniMapContainer position="topright" />
         <Marker position={DejayPosition}>
