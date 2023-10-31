@@ -1,4 +1,10 @@
+## Description
+
+기술 조사를 위해 생성한 저장소입니다.
+다양한 시도와 테스트를 통해 가능한 구현 상태를 확인합니다.
+
 ## Library
+
 - Uber H3-JS
 - Map Render / leaflet
 - leaflet-heatmap
