@@ -1,0 +1,16 @@
+testJson = [
+  {
+    "title": "드제이",
+    "longitude": 126.9176768,
+    "latitude": 37.5515208,
+    "image": "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=DIE0iVEFLGyo5upQhiF9pw&cb_client=search.gws-prod.gps&w=408&h=240&yaw=265.60312&pitch=0&thumbfov=100",
+    "model": "./threeModels/shiba/scene.gltf"
+  },
+  {
+    "title": "합정역",
+    "longitude": 126.9176768,
+    "latitude": 37.5515208,
+    "image": "https://lh5.googleusercontent.com/p/AF1QipM8OnOcGnlXmK_zaLCxfxUkUBq21qNWoPOGUrmf=w408-h306-k-no",
+    "model": "https://docs.mapbox.com/mapbox-gl-js/assets/34M_17/34M_17.gltf",
+  }
+]

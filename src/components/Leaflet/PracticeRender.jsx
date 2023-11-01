@@ -13,10 +13,10 @@ import {
   Rectangle,
 } from "react-leaflet";
 
-import icon from "../assets/constants";
-import { data } from "../data/data";
-import { heatmapData } from "../data/heatmapData";
-import { loadData } from "../data/loadData";
+import icon from "../../assets/constants";
+import { data } from "../../data/data";
+import { heatmapData } from "../../data/heatmapData";
+import { loadData } from "../../data/loadData";
 import HeatmapLayer from "./HeatmapLayer";
 import { useEventHandlers } from "@react-leaflet/core";
 

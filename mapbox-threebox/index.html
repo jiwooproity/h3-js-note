@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Add a 3D model</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="./json/mapbox-example.json" type="text/javascript"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://unpkg.com/three@0.126.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+    <div id="map"></div>
+    <script>
+      mapboxgl.accessToken = "";
+      const map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v9",
+        zoom: 18,
+        center: [126.9176768, 37.5515208],
+        pitch: 60,
+        antialias: true,
+      });
+
+      const modelOrigin = [126.9176768, 37.5515208];
+      const modelAltitude = 0;
+      const modelRotate = [Math.PI / 2, 0, 0];
+
+      const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
+        modelOrigin,
+        modelAltitude
+      );
+
+      const modelTransform = {
+        translateX: modelAsMercatorCoordinate.x,
+        translateY: modelAsMercatorCoordinate.y,
+        translateZ: modelAsMercatorCoordinate.z,
+        rotateX: modelRotate[0],
+        rotateY: modelRotate[1],
+        rotateZ: modelRotate[2],
+        scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits(),
+      };
+
+      const THREE = window.THREE;
+
+      const customLayer = {
+        id: "3d-model",
+        type: "custom",
+        renderingMode: "3d",
+        onAdd: function (map, gl) {
+          // 카메라 소환
+          this.camera = new THREE.Camera();
+          // 그려질 장면 소환
+          this.scene = new THREE.Scene();
+
+          // 그려질 장면에 directionLight 삽입
+          const directionalLight = new THREE.DirectionalLight(0xffffff);
+          directionalLight.position.set(0, -70, 100).normalize();
+          this.scene.add(directionalLight);
+
+          // 그려질 장면에 directionLight 삽입 2
+          // gltf 파일 상태에 따라 조명 설정이 필요함
+          const directionalLight2 = new THREE.DirectionalLight(0xffffff);
+          directionalLight2.position.set(0, 70, 100).normalize();
+          this.scene.add(directionalLight2);
+
+          // GLTF 파일 로더 생성
+          const loader = new THREE.GLTFLoader();
+          // GTLF 파일을 불러와 장면에 그려넣어줌
+          loader.load("./threeModels/shiba/scene.gltf", (gltf) => {
+            this.scene.add(gltf.scene);
+          });
+
+          this.map = map;
+
+          // 모델에 대한 x, y, z 좌표 명시
+          this.camera.position.set(0, -1, 0);
+
+          this.renderer = new THREE.WebGLRenderer({
+            canvas: map.getCanvas(),
+            context: gl,
+            // 안티알리어싱
+            antialias: true,
+          });
+
+          // sRGB 인코딩 처리
+          this.renderer.outputEncoding = THREE.sRGBEncoding;
+          this.renderer.autoClear = false;
+        },
+        render: function (gl, matrix) {
+          const rotationX = new THREE.Matrix4().makeRotationAxis(
+            new THREE.Vector3(1, 0, 0),
+            modelTransform.rotateX
+          );
+          const rotationY = new THREE.Matrix4().makeRotationAxis(
+            new THREE.Vector3(0, 1, 0),
+            modelTransform.rotateY
+          );
+          const rotationZ = new THREE.Matrix4().makeRotationAxis(
+            new THREE.Vector3(0, 0, 1),
+            modelTransform.rotateZ
+          );
+
+          const m = new THREE.Matrix4().fromArray(matrix);
+          const l = new THREE.Matrix4()
+            .makeTranslation(
+              modelTransform.translateX,
+              modelTransform.translateY,
+              modelTransform.translateZ
+            )
+            .scale(
+              new THREE.Vector3(
+                modelTransform.scale,
+                -modelTransform.scale,
+                modelTransform.scale
+              )
+            )
+            .multiply(rotationX)
+            .multiply(rotationY)
+            .multiply(rotationZ);
+
+          this.camera.projectionMatrix = m.multiply(l);
+          this.renderer.resetState();
+          this.renderer.render(this.scene, this.camera);
+          this.map.triggerRepaint();
+        },
+      };
+
+      map.on("style.load", () => {
+        map.addLayer(customLayer, "waterway-label");
+      });
+    </script>
+  </body>
+</html>

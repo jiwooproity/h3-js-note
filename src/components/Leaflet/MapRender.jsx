@@ -12,7 +12,7 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 
-import { data } from "../data/data";
+import { data } from "../../data/data";
 
 const h3 = require("h3-js");
 

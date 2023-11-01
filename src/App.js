@@ -1,8 +1,7 @@
-// import Map from "./components/MapRender";
-import PracticeRender from "./components/PracticeRender";
+import MapboxLayer from "./components/Mapbox/MapboxLayer";
 
 function App() {
-  return <PracticeRender />;
+  return <MapboxLayer />;
 }
 
 export default App;
